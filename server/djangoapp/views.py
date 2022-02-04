@@ -29,7 +29,7 @@ def contact(request):
 def registration_request(request):
     context = {}
     if request.method == 'GET':
-        return render(request, 'onlinecourse/user_registration_bootstrap.html', context)
+        return render(request, 'djangoapp/registration.html', context)
     elif request.method == 'POST':
         # Check if user exists
         username = request.POST['username']
@@ -72,18 +72,6 @@ def logout_request(request):
     logout(request)
     return redirect('djangoapp:index')
 
-
-# Create a `login_request` view to handle sign in request
-# def login_request(request):
-# ...
-
-# Create a `logout_request` view to handle sign out request
-# def logout_request(request):
-# ...
-
-# Create a `registration_request` view to handle sign up request
-# def registration_request(request):
-# ...
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):

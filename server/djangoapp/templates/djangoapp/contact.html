@@ -10,8 +10,13 @@
         <nav class="navbar navbar-light bg-light">
             <div class="container-fluid">
                 <div class="navbar-header">
-                      <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Car Dealership</a>
+                      <a class="navbar-brand" href="{% url 'djangoapp:index' %}">Dealership Review</a>
                 </div>
+                <ul class="nav navbar-nav navbar-left">
+                    <li><a class="btn btn-link" type="button" href="{% url 'djangoapp:about' %}">About Us</a>
+                    <a class="btn btn-link" type="button" href="{% url 'djangoapp:contact' %}">Contact Us</a>
+                    </li>
+                </ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
                     <li>
