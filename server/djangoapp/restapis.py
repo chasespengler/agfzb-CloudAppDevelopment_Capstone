@@ -4,8 +4,6 @@ from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 
 def get_request(url, **kwargs):
-    print(kwargs)
-    print("GET from {} ".format(url))
     try:
         if "apikey" in kwargs:
             response = requests.get(url, headers={'Content-Type':'application/json'}, params=kwargs, auth=HTTPBasicAuth("apikey", kwargs["apikey"]))
@@ -40,10 +38,11 @@ def post_request(url, payload, **kwargs):
 def get_dealers_from_cf(url, **kwargs):
     results = []
     # Call get_request with a URL parameter
-    json_result = get_request(url)
+    json_result = get_request(url, **kwargs)
+   
     if json_result:
         # Get the row list in JSON as dealers
-        dealers = json_result["body"]
+        dealers = json_result["body"]            
         # For each dealer object
         for dealer in dealers:
             # Get its content in `doc` object

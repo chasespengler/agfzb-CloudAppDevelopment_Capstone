@@ -48,6 +48,7 @@
         </div>
     </nav>
     <!--Add a dealer table here -->
+    <div class="container">
     <table class="table" id="table" data-filter-control="true">
         <thead>
             <tr>
@@ -73,6 +74,12 @@
             {% endfor %}
         </tbody>
     </table>
+</div>
     </body>
-
+    <script>
+        $(function() {
+          $('#table').bootstrapTable()
+        })
+      </script>
+      
 </html>
