@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    run: dealership
+  name: dealership
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: dealership
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        run: dealership
+    spec:
+      containers:
+      - image: us.icr.io/alex_bash_c3da2e11/dealership:latest
+        imagePullPolicy: Always
+        name: dealership
+        command: ["/bin/sh"] 
+        args: ["-c", "while true; do echo Done Deploying sv-premier; sleep 3600;done"] 
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+      restartPolicy: Always
+  replicas: 1
