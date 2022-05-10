@@ -30,16 +30,45 @@ def contact(request):
         return render(request, 'djangoapp/contact.html', context)
 
 # Create a `login_request` view to handle sign in request
-# def login_request(request):
-# ...
+def login_request(request):
+    context = {}
+    if request.method == "POST":
+        username = request.POST['username']
+        password = request.POST['psw']
+        user = authenticate(username=username, password=password)
+        if user:
+            login(request, user)
+            return redirect('djangoapp:index')
+        else:
+            context["message"]= "Invalid username or password, try again."
+            return render(request, 'djangoapp/index.html', context)
+    else:
+        return render(request, 'django/index.html', context)
 
 # Create a `logout_request` view to handle sign out request
-# def logout_request(request):
-# ...
+def logout_request(request):
+    logout(request)
+    return redirect('django:index')
 
 # Create a `registration_request` view to handle sign up request
-# def registration_request(request):
-# ...
+def registration_request(request):
+    context = {}
+    if request.method == "GET":
+        return render(request, 'djangoapp/index.html', context)
+    elif request.method == "POST":
+        username = request.POST['username']
+        try:
+            User.objects.get(username=username)
+            context["message"] = "Username already exists. Please pick a unique username."
+            return render(request, 'djangoapp/registration.html', context)
+        except:
+            password = request.POST['password']
+            first = request.POST['firstname']
+            last = request.POST['lastname']
+            user = User.objects.create_user(username = username, first_name = first, last_name = last, password = password)
+            login(request, user)
+            return redirect('djangoapp:index')
+
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
