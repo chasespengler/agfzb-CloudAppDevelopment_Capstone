@@ -72,16 +72,63 @@ def registration_request(request):
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
-    context = {}
     if request.method == "GET":
-        return render(request, 'djangoapp/index.html', context)
+        url = "us-south.cf.appdomain.cloud/dealerships/dealer-get"
+        # Get dealers from the URL
+        dealerships = get_dealers_from_cf(url)
+        # Concat all dealer's short name
+        dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
+        # Return a list of dealer short name
+        return HttpResponse(dealer_names)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
-# def get_dealer_details(request, dealer_id):
-# ...
+def get_dealer_details(request, dealer_id):
+    context={}
+    url = "chasespengl.us-south.cf.appdomain.cloud/api/review"
+    info_url = "chasespengl.us-south.cf.appdomain.cloud/api/dealership"
+    reviews = get_dealer_reviews_from_cf(url, dealer_id)
+
+    context["dealer_id"]=dealer_id
+    context["reviews"]=reviews
+    context["dealer_name"] = get_dealers_from_cf(info_url)[dealer_id].full_name
+    return render(request, 'djangoapp/dealer_details.html', context)
 
 # Create a `add_review` view to submit a review
-# def add_review(request, dealer_id):
-# ...
+def add_review(request, dealer_id):    
+    context = {}
+    if request.method == 'GET':
+        url = "chasespengl.us-south.cf.appdomain.cloud/api/dealership"
+        cars = CarModel.objects.filter(dealer_id=dealer_id)
+        context = {
+            "dealer_id": dealer_id,
+            "dealer_name": get_dealers_from_cf(url)[dealer_id].full_name,
+            "cars": cars
+        }
+        return render(request, 'djangoapp/add_review.html', context)
+    elif request.method == 'POST':
+        if (request.user.is_authenticated):
+            review = {}
+            review["name"] = request.user.first_name + " " + request.user.last_name
+            review["dealership"] = dealer_id
+            review["review"] = request.POST["content"]
+            review["purchase"] = request.POST["purchase"]
+            if review["purchase"]:
+                review["purchase_date"] = request.POST["purchase_date"] 
+                review["car_make"] = request.POST["car_make"]
+                review["car_model"] = request.POST["car_model"]
+                review["car_year"] = request.POST["car_year"]
+            else:
+                review["purchase_date"] = "na"   
+                review["car_make"] = "na"   
+                review["car_model"] = "na"   
+                review["car_year"] = "na"            
+            
+            json_payload = {"review": review}
+            json_result = post_request("chasespengl.us-south.cf.appdomain.cloud/api/review", json_payload)
+            if "error" in json_result:
+                context["message"] = "Review not submitted, try again."
+            else:
+                context["message"] = "OK"
+        return redirect("djangoapp:dealer_details", dealer_id=dealer_id)
 
