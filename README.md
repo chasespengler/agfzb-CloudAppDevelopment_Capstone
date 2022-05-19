@@ -1,4 +1,4 @@
-### This is the Final Project for the IBM Fullstack Software Developer and Cloud Application Specialization offered on Coursera
+### This is the Final Project for the IBM Fullstack Software Developer and Cloud Application Specialization offered on Coursera.
 
 # Final Project Template
 
